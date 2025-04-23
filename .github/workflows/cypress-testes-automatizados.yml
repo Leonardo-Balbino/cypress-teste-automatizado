@@ -1,0 +1,31 @@
+name: Cypress Tests - In Class Project
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Cypress-testes-automatizados/**.js'
+      - 'Cypress-testes-automatizados/**.json'
+      - 'Cypress-testes-automatizados/**.yml'
+
+jobs:
+  Cypress-testes-automatizados-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.12.1
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./Cypress-testes-automatizados
+
+      - name: Run Cypress tests
+        run: npm run cypress:headless
+        working-directory: ./Cypress-testes-automatizados
