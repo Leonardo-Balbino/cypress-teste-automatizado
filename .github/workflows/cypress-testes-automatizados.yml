@@ -1,13 +1,7 @@
 name: Cypress Tests - In Class Project
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'Cypress-testes-automatizados/**.js'
-      - 'Cypress-testes-automatizados/**.json'
-      - 'Cypress-testes-automatizados/**.yml'
+  push:  # executa em qualquer push (incluindo main)
 
 jobs:
   Cypress-testes-automatizados-tests:
@@ -17,12 +11,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Remove node_modules comitados
+        run: rm -rf ./Cypress-testes-automatizados/node_modules
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.12.1
 
-      # Cache de node_modules
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -31,7 +27,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
-      # Cache do binário do Cypress
       - name: Cache Cypress binary
         uses: actions/cache@v3
         with:
@@ -44,9 +39,8 @@ jobs:
         run: npm install
         working-directory: ./Cypress-testes-automatizados
 
-      # Passo extra para baixar o binário do Cypress, caso não esteja no cache
-      - name: Install Cypress binary
-        run: npx cypress install
+      - name: Install Cypress binary (force)
+        run: npx cypress install --force
         working-directory: ./Cypress-testes-automatizados
 
       - name: Run Cypress tests
