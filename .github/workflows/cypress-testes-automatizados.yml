@@ -22,8 +22,31 @@ jobs:
         with:
           node-version: 20.12.1
 
+      # Cache de node_modules
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: Cypress-testes-automatizados/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('Cypress-testes-automatizados/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      # Cache do binário do Cypress
+      - name: Cache Cypress binary
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('Cypress-testes-automatizados/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Install dependencies
         run: npm install
+        working-directory: ./Cypress-testes-automatizados
+
+      # Passo extra para baixar o binário do Cypress, caso não esteja no cache
+      - name: Install Cypress binary
+        run: npx cypress install
         working-directory: ./Cypress-testes-automatizados
 
       - name: Run Cypress tests
